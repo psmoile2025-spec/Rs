@@ -3,20 +3,17 @@
     {
       "src": "wsgi.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "build_files.sh",
-      "use": "@vercel/static-build"
     }
   ],
-  "routes": [    
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "wsgi.py"
+    },
     {
       "src": "/(.*)",
       "dest": "wsgi.py"
     }
-  ],
-
-  "env": {
-    "PYTHON_VERSION": "3.9"
-  }
+  ]
 }

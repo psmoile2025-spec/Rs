@@ -1,19 +1,8 @@
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.security import generate_password_hash
 
 from .config import Config
-from .repositories.supabase import (
-    SupabaseUserRepository,
-    SupabaseCategoryRepository,
-    SupabaseMenuItemRepository,
-    SupabaseOrderRepository,
-    SupabaseOrderItemRepository,
-)
-from werkzeug.security import generate_password_hash
-from .services import AuthService, POSService, MenuService, ReportService
-from .routes.auth import auth_bp
-from .routes.pos import pos_bp
-from .routes.menu import menu_bp
-from .routes.reports import reports_bp
+from .repositories.supabase import SupabaseConfigError
 
 
 def create_app(config_class=Config) -> Flask:
@@ -24,11 +13,19 @@ def create_app(config_class=Config) -> Flask:
     _init_services(app)
     _register_blueprints(app)
     _init_default_admin(app)
+    _register_error_handlers(app)
 
     return app
 
 
 def _init_repositories(app: Flask) -> None:
+    from .repositories.supabase import (
+        SupabaseUserRepository,
+        SupabaseCategoryRepository,
+        SupabaseMenuItemRepository,
+        SupabaseOrderRepository,
+        SupabaseOrderItemRepository,
+    )
     app.user_repo = SupabaseUserRepository()
     app.category_repo = SupabaseCategoryRepository()
     app.menu_item_repo = SupabaseMenuItemRepository()
@@ -37,6 +34,7 @@ def _init_repositories(app: Flask) -> None:
 
 
 def _init_services(app: Flask) -> None:
+    from .services import AuthService, POSService, MenuService, ReportService
     app.auth_service = AuthService(app.user_repo)
     app.pos_service = POSService(
         order_repo=app.order_repo,
@@ -57,6 +55,10 @@ def _init_services(app: Flask) -> None:
 
 
 def _register_blueprints(app: Flask) -> None:
+    from .routes.auth import auth_bp
+    from .routes.pos import pos_bp
+    from .routes.menu import menu_bp
+    from .routes.reports import reports_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(pos_bp)
     app.register_blueprint(menu_bp)
@@ -66,6 +68,8 @@ def _register_blueprints(app: Flask) -> None:
 def _init_default_admin(app: Flask) -> None:
     try:
         with app.app_context():
+            if not app.config.get("SUPABASE_URL") or not app.config.get("SUPABASE_KEY"):
+                return
             repo = app.user_repo
             email = app.config["DEFAULT_ADMIN_EMAIL"]
             password = app.config["DEFAULT_ADMIN_PASSWORD"]
@@ -78,3 +82,13 @@ def _init_default_admin(app: Flask) -> None:
     except Exception as e:
         import logging
         logging.warning("Could not initialize admin user: %s", e)
+
+
+def _register_error_handlers(app: Flask) -> None:
+    @app.errorhandler(SupabaseConfigError)
+    def handle_supabase_config_error(e):
+        return jsonify({"error": str(e)}), 500
+
+    @app.errorhandler(500)
+    def handle_500(e):
+        return jsonify({"error": "Internal server error"}), 500
