@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime, date, timezone
 from decimal import Decimal
 from collections import Counter
