@@ -213,6 +213,22 @@ input[type="number"], input[type="date"], select, textarea {
   gap: 0.75rem;
   align-items: end;
 }
+.add-item-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+.add-item-grid .btn { margin-bottom: 0; }
+
+.item-photo {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+  background: var(--slate-100);
+}
 
 /* ===== Cards ===== */
 .card {
@@ -328,7 +344,7 @@ input[type="number"], input[type="date"], select, textarea {
   flex: 1;
 }
 .item-btn {
-  padding: 0.85rem 0.5rem;
+  padding: 0.5rem;
   border: 1.5px solid var(--slate-200);
   border-radius: var(--radius);
   background: #fff;
@@ -338,8 +354,16 @@ input[type="number"], input[type="date"], select, textarea {
 }
 .item-btn:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(37,99,235,0.12); }
 .item-btn:active { transform: scale(0.97); }
-.item-name { display: block; font-weight: 600; font-size: 0.85rem; }
+.item-name { display: block; font-weight: 600; font-size: 0.85rem; margin-top: 0.35rem; }
 .item-price { display: block; font-size: 0.8rem; color: var(--green); margin-top: 0.2rem; }
+.item-btn-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
+  background: var(--slate-100);
+}
 
 .pos-cart {
   background: #fff;
@@ -632,7 +656,7 @@ h2 { font-size: 1.15rem; margin: 1.25rem 0 0.75rem; }
   }
   .pos-cart-overlay.open { display: block; }
   .items-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); padding-bottom: 4rem; }
-  .item-btn { padding: 0.65rem 0.4rem; }
+  .item-btn { padding: 0.4rem; }
   .item-name { font-size: 0.8rem; }
   .item-price { font-size: 0.75rem; }
 
@@ -652,6 +676,8 @@ h2 { font-size: 1.15rem; margin: 1.25rem 0 0.75rem; }
   /* Forms mobile */
   .add-user-grid { grid-template-columns: 1fr; }
   .add-user-grid .form-group { margin-bottom: 0.5rem; }
+  .add-item-grid { grid-template-columns: 1fr; }
+  .add-item-grid .form-group { margin-bottom: 0.5rem; }
   .inline-form { flex-direction: column; align-items: stretch; }
   .inline-form input, .inline-form select, .inline-form .btn { width: 100%; }
   .sm-input { max-width: 100%; }
@@ -663,6 +689,7 @@ h2 { font-size: 1.15rem; margin: 1.25rem 0 0.75rem; }
 
 @media (max-width: 480px) {
   .items-grid { grid-template-columns: repeat(2, 1fr); }
+  .item-btn { padding: 0.35rem; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .stats-grid .stat-card { padding: 0.85rem; }
   .stat-value { font-size: 1.2rem; }

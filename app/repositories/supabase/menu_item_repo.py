@@ -40,7 +40,7 @@ class SupabaseMenuItemRepository(MenuItemRepository):
         )
         return self._map_rows(result.data)
 
-    def create(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None) -> MenuItem:
+    def create(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None, image_url: Optional[str] = None) -> MenuItem:
         client = get_supabase_client()
         data = {
             "category_id": category_id,
@@ -50,13 +50,22 @@ class SupabaseMenuItemRepository(MenuItemRepository):
         }
         if cost is not None:
             data["cost"] = cost
+        if image_url is not None:
+            data["image_url"] = image_url
         result = client.table("menu_items").insert(data).execute()
         return MenuItem.from_dict(result.data[0])
 
     def update(self, id: str, **kwargs) -> Optional[MenuItem]:
         client = get_supabase_client()
-        allowed = {"name", "description", "price", "category_id", "available", "cost"}
-        updates = {k: v for k, v in kwargs.items() if k in allowed and v is not None}
+        allowed = {"name", "description", "price", "category_id", "available", "cost", "image_url"}
+        updates = {}
+        for k, v in kwargs.items():
+            if k not in allowed:
+                continue
+            if k == "image_url":
+                updates[k] = v
+            elif v is not None:
+                updates[k] = v
         if not updates:
             return self.get_by_id(id)
         updates["updated_at"] = datetime.now(timezone.utc).isoformat()

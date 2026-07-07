@@ -29,8 +29,8 @@ class MenuService(MenuServiceInterface):
             return self._menu_item_repo.list_by_category(category_id)
         return self._menu_item_repo.list()
 
-    def create_item(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None) -> MenuItem:
-        return self._menu_item_repo.create(category_id, name, price, description, cost)
+    def create_item(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None, image_url: Optional[str] = None) -> MenuItem:
+        return self._menu_item_repo.create(category_id, name, price, description, cost, image_url)
 
     def update_item(self, id: str, **kwargs) -> Optional[MenuItem]:
         return self._menu_item_repo.update(id, **kwargs)

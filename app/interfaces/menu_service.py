@@ -30,7 +30,7 @@ class MenuServiceInterface(ABC):
         ...
 
     @abstractmethod
-    def create_item(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None) -> MenuItem:
+    def create_item(self, category_id: str, name: str, price: float, description: Optional[str] = None, cost: Optional[float] = None, image_url: Optional[str] = None) -> MenuItem:
         ...
 
     @abstractmethod

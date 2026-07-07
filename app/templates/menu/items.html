@@ -9,7 +9,7 @@
 <div class="card" style="margin-bottom:1.25rem;">
   <div class="card-header"><h2>Add Item</h2></div>
   <form method="POST" action="{{ url_for('menu.create_item') }}" class="form">
-    <div class="add-user-grid">
+    <div class="add-item-grid">
       <div class="form-group" style="margin-bottom:0;">
         <label for="add_category">Category</label>
         <select id="add_category" name="category_id" required class="form-control">
@@ -24,10 +24,24 @@
         <input type="text" id="add_name" name="name" required class="form-control" placeholder="Item name">
       </div>
       <div class="form-group" style="margin-bottom:0;">
-        <label for="add_price">Price</label>
+        <label for="add_price">Price (Ks)</label>
         <input type="number" id="add_price" name="price" step="1" min="1" required class="form-control" placeholder="1000">
       </div>
-      <button type="submit" class="btn btn-primary" style="margin-top:1.45rem;">Add Item</button>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="add_image_url">Photo URL <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <input type="url" id="add_image_url" name="image_url" class="form-control" placeholder="https://example.com/photo.jpg">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="add_cost">Cost (Ks) <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <input type="number" id="add_cost" name="cost" step="1" min="0" class="form-control" placeholder="0">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="add_description">Description <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <input type="text" id="add_description" name="description" class="form-control" placeholder="Brief description">
+      </div>
+      <div class="form-group" style="margin-bottom:0; align-self:end;">
+        <button type="submit" class="btn btn-primary">Add Item</button>
+      </div>
     </div>
   </form>
 </div>
@@ -38,6 +52,7 @@
   <table class="table">
     <thead>
       <tr>
+        <th style="width:60px;">Photo</th>
         <th>Name</th>
         <th>Category</th>
         <th>Price</th>
@@ -50,6 +65,9 @@
     <tbody>
       {% for item in items %}
       <tr>
+        <td>
+          <img class="item-photo" src="{{ item.image_url or 'https://placehold.co/300x300/e2e8f0/64748b?text=No+Image' }}" alt="{{ item.name }}" loading="lazy" onerror="this.src='https://placehold.co/300x300/e2e8f0/64748b?text=No+Image'">
+        </td>
         <td><strong>{{ item.name }}</strong>{% if item.description %}<br><span class="text-muted">{{ item.description }}</span>{% endif %}</td>
         <td>{{ item.category_name or "" }}</td>
         <td>{{ item.price | kyat }}</td>
@@ -58,7 +76,7 @@
         <td>{% if item.available %}<span class="badge badge-success">Yes</span>{% else %}<span class="badge badge-danger">No</span>{% endif %}</td>
         <td>
           <div class="table-actions">
-            <button class="btn btn-primary btn-sm" onclick="openEditModal('{{ item.id }}', '{{ item.name|e }}', '{{ item.description|e }}', '{{ item.category_id }}', {{ item.price }}, {{ item.cost if item.cost is not none else 'null' }})">Edit</button>
+            <button class="btn btn-primary btn-sm" onclick="openEditModal('{{ item.id }}', '{{ item.name|e }}', '{{ item.description|e }}', '{{ item.category_id }}', {{ item.price }}, {{ item.cost if item.cost is not none else 'null' }}, '{{ item.image_url|e or '' }}')">Edit</button>
             <form method="POST" action="{{ url_for('menu.toggle_item', id=item.id) }}" style="display:inline">
               <button type="submit" class="btn btn-sm">{{ "Disable" if item.available else "Enable" }}</button>
             </form>
@@ -67,7 +85,7 @@
         </td>
       </tr>
       {% else %}
-      <tr><td colspan="7" class="table-empty">No menu items found.</td></tr>
+      <tr><td colspan="8" class="table-empty">No menu items found.</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -97,12 +115,16 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="edit_price">Price</label>
+        <label for="edit_price">Price (Ks)</label>
         <input type="number" id="edit_price" name="price" step="1" min="1" required class="form-control">
       </div>
       <div class="form-group">
-        <label for="edit_cost">Cost <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <label for="edit_cost">Cost (Ks) <span class="text-muted" style="font-weight:400;">(optional)</span></label>
         <input type="number" id="edit_cost" name="cost" step="1" min="0" class="form-control" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label for="edit_image_url">Photo URL <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+        <input type="url" id="edit_image_url" name="image_url" class="form-control" placeholder="https://example.com/photo.jpg">
       </div>
       <input type="hidden" id="edit_item_id">
       <div class="modal-footer">
@@ -134,13 +156,14 @@ var editOverlay = document.getElementById("editModalOverlay");
 var deleteModal = document.getElementById("deleteModal");
 var deleteOverlay = document.getElementById("deleteModalOverlay");
 
-function openEditModal(id, name, description, categoryId, price, cost) {
+function openEditModal(id, name, description, categoryId, price, cost, imageUrl) {
   document.getElementById("edit_item_id").value = id;
   document.getElementById("edit_name").value = name;
   document.getElementById("edit_description").value = description;
   document.getElementById("edit_category").value = categoryId;
   document.getElementById("edit_price").value = price;
   document.getElementById("edit_cost").value = cost !== null ? cost : "";
+  document.getElementById("edit_image_url").value = imageUrl || "";
   editModal.style.display = "flex";
   editOverlay.style.display = "block";
 }

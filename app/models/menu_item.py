@@ -12,6 +12,7 @@ class MenuItem:
     price: Decimal
     cost: Optional[Decimal] = None
     description: Optional[str] = None
+    image_url: Optional[str] = None
     available: bool = True
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -31,6 +32,7 @@ class MenuItem:
             price=price,
             cost=cost,
             description=data.get("description"),
+            image_url=data.get("image_url"),
             available=data.get("available", True),
             created_at=data.get("created_at"),
             updated_at=data.get("updated_at"),
@@ -46,6 +48,7 @@ class MenuItem:
             "price": str(self.price),
             "cost": str(self.cost) if self.cost is not None else None,
             "description": self.description,
+            "image_url": self.image_url,
             "available": self.available,
             "created_at": self.created_at,
             "updated_at": self.updated_at,

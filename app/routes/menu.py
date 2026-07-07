@@ -60,12 +60,13 @@ def create_item():
     description = request.form.get("description", "").strip() or None
     cost_raw = request.form.get("cost", "").strip()
     cost = float(cost_raw) if cost_raw else None
+    image_url = request.form.get("image_url", "").strip() or None
 
     if not name or not category_id or price <= 0:
         flash("Name, category, and valid price are required.", "error")
         return redirect(url_for("menu.list_items"))
 
-    current_app.menu_service.create_item(category_id, name, price, description, cost)
+    current_app.menu_service.create_item(category_id, name, price, description, cost, image_url)
     flash("Menu item created.", "success")
     return redirect(url_for("menu.list_items"))
 
@@ -84,6 +85,8 @@ def update_item(id):
     cost_raw = request.form.get("cost", "").strip()
     if cost_raw:
         updates["cost"] = float(cost_raw)
+    image_url = request.form.get("image_url", "").strip()
+    updates["image_url"] = image_url if image_url else None
 
     if updates:
         current_app.menu_service.update_item(id, **updates)
