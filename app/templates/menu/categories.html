@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<h1>Categories</h1>
+
+<form method="POST" action="{{ url_for('menu.create_category') }}" class="inline-form">
+    <input type="text" name="name" placeholder="Category name" required>
+    <input type="number" name="sort_order" placeholder="Sort order" value="0" min="0">
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Sort Order</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cat in categories %}
+        <tr>
+            <td>
+                <form method="POST" action="{{ url_for('menu.update_category', id=cat.id) }}" class="inline-form">
+                    <input type="text" name="name" value="{{ cat.name }}" required>
+                    <input type="number" name="sort_order" value="{{ cat.sort_order }}" min="0" class="sm-input">
+                    <button type="submit" class="btn btn-sm">Edit</button>
+                </form>
+            </td>
+            <td>{{ cat.sort_order }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('menu.delete_category', id=cat.id) }}" onsubmit="return confirm('Delete this category?')">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<h1>Order {{ order.order_number }}</h1>
+<p>Status: <strong>{{ order.status }}</strong></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items %}
+        <tr>
+            <td>{{ item.item_name or item.menu_item_id }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ "%.2f"|format(item.unit_price) }}</td>
+            <td>${{ "%.2f"|format(item.line_total) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="totals">
+    <p>Subtotal: ${{ "%.2f"|format(order.subtotal) }}</p>
+    <p>Tax: ${{ "%.2f"|format(order.tax) }}</p>
+    <p><strong>Total: ${{ "%.2f"|format(order.total) }}</strong></p>
+    {% if order.payment_type %}
+    <p>Payment: {{ order.payment_type }}</p>
+    {% endif %}
+</div>
+
+<div class="order-actions" style="margin-top:1rem; display:flex; gap:0.5rem;">
+    <a href="{{ url_for('pos.pos_index') }}" class="btn">Back to POS</a>
+    {% if order.status == 'open' %}
+    <form method="POST" action="{{ url_for('pos.cancel_order', order_id=order.id) }}" onsubmit="return confirm('Cancel this order?')">
+        <button type="submit" class="btn btn-danger">Cancel Order</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

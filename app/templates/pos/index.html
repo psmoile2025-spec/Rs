@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}POS{% endblock %}
+{% block content %}
+<div class="pos-layout">
+    <div class="pos-menu">
+        <div class="category-tabs">
+            <button class="tab-btn active" data-category="">All</button>
+            {% for cat in categories %}
+            <button class="tab-btn" data-category="{{ cat.id }}">{{ cat.name }}</button>
+            {% endfor %}
+        </div>
+        <div class="items-grid" id="items-grid">
+            {% for item in items %}
+            <button class="item-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-category="{{ item.category_id }}">
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-price">${{ "%.2f"|format(item.price) }}</span>
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="pos-cart">
+        <h2>Current Order</h2>
+        <div id="order-info">
+            <p>No active order selected.</p>
+        </div>
+        <details class="pos-active-orders" open>
+            <summary>Active Orders <span class="active-count">({{ active_orders|length }})</span></summary>
+            <ul class="active-orders" id="active-orders-list">
+                {% for order in active_orders %}
+                <li class="active-order-item">
+                    <a href="#" class="order-link" data-order-id="{{ order.id }}">
+                        {{ order.order_number }} - ${{ "%.2f"|format(order.total) }}
+                    </a>
+                    <button class="cancel-order-btn btn btn-sm btn-danger" data-order-id="{{ order.id }}" title="Cancel order">&times;</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </details>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-totals" id="cart-totals"></div>
+        <div class="cart-actions">
+            <button id="new-order-btn" class="btn btn-primary">New Order</button>
+            <button id="pay-btn" class="btn btn-success" disabled>Pay</button>
+        </div>
+    </div>
+</div>
+
+<div id="pay-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2>Payment</h2>
+        <p>Order: <span id="pay-order-number"></span></p>
+        <p>Total: $<span id="pay-total"></span></p>
+        <form id="pay-form">
+            <input type="hidden" id="pay-order-id">
+            <div class="form-group">
+                <label>Payment Type</label>
+                <select id="payment-type" class="form-control">
+                    <option value="cash">Cash</option>
+                    <option value="card">Card</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Confirm Payment</button>
+            <button type="button" class="btn btn-secondary btn-block" onclick="closePayModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

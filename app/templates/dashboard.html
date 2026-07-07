@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard <small class="text-muted">{{ stats.today_order_count }} orders today</small></h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.open_orders }}</div>
+        <div class="stat-label">Open Orders</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(stats.today_subtotal) }}</div>
+        <div class="stat-label">Subtotal (Sales)</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(stats.today_tax) }}</div>
+        <div class="stat-label">Tax Collected</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(stats.today_revenue) }}</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card {% if stats.today_cost is not none %}{% endif %}">
+        <div class="stat-value">${{ "%.2f"|format(stats.today_cost) if stats.today_cost is not none else "---" }}</div>
+        <div class="stat-label">Cost of Goods Sold</div>
+    </div>
+    <div class="stat-card {% if stats.today_profit is not none and stats.today_profit >= 0 %}stat-profit{% elif stats.today_profit is not none %}stat-loss{% endif %}">
+        <div class="stat-value">
+            {% if stats.today_profit is not none %}
+                ${{ "%.2f"|format(stats.today_profit) }}
+            {% else %}
+                ---
+            {% endif %}
+        </div>
+        <div class="stat-label">Gross Profit / Loss</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">
+            {% if stats.today_profit is not none and stats.today_subtotal > 0 %}
+                {{ "%.1f"|format((stats.today_profit / stats.today_subtotal) * 100) }}%
+            {% else %}
+                ---
+            {% endif %}
+        </div>
+        <div class="stat-label">Profit Margin</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.today_order_count }}</div>
+        <div class="stat-label">Completed Orders</div>
+    </div>
+</div>
+
+<h2>Popular Items Today</h2>
+{% if stats.popular_items %}
+<table class="table">
+    <thead>
+        <tr><th>Item</th><th>Quantity Sold</th></tr>
+    </thead>
+    <tbody>
+        {% for item in stats.popular_items %}
+        <tr><td>{{ item.name }}</td><td>{{ item.quantity }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No sales yet today.</p>
+{% endif %}
+{% endblock %}

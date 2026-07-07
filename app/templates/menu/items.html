@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Menu Items{% endblock %}
+{% block content %}
+<h1>Menu Items</h1>
+
+<form method="POST" action="{{ url_for('menu.create_item') }}" class="inline-form">
+    <select name="category_id" required>
+        <option value="">Select category</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="name" placeholder="Item name" required>
+    <input type="number" name="price" placeholder="Price" step="0.01" min="0.01" required>
+    <input type="number" name="cost" placeholder="Cost" step="0.01" min="0">
+    <input type="text" name="description" placeholder="Description (optional)">
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Cost</th>
+            <th>Profit</th>
+            <th>Available</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>
+                <form method="POST" action="{{ url_for('menu.update_item', id=item.id) }}" class="inline-form">
+                    <input type="text" name="name" value="{{ item.name }}" required class="sm-input">
+                    <input type="text" name="description" value="{{ item.description or '' }}" placeholder="Desc" class="sm-input">
+            </td>
+            <td>
+                <select name="category_id" class="sm-input">
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if cat.id == item.category_id %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <input type="number" name="price" value="{{ item.price }}" step="0.01" min="0.01" class="sm-input">
+            </td>
+            <td>
+                <input type="number" name="cost" value="{{ item.cost if item.cost is not none else '' }}" step="0.01" min="0" class="sm-input">
+            </td>
+            <td>
+                {% if item.profit is not none %}
+                    ${{ "%.2f"|format(item.profit) }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>{{ "Yes" if item.available else "No" }}</td>
+            <td>
+                    <button type="submit" class="btn btn-sm">Save</button>
+                </form>
+                <form method="POST" action="{{ url_for('menu.toggle_item', id=item.id) }}" style="display:inline">
+                    <button type="submit" class="btn btn-sm">{{ "Disable" if item.available else "Enable" }}</button>
+                </form>
+                <form method="POST" action="{{ url_for('menu.delete_item', id=item.id) }}" style="display:inline" onsubmit="return confirm('Delete this item?')">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

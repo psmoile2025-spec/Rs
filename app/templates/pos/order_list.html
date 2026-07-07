@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Active Orders{% endblock %}
+{% block content %}
+<h1>Active Orders</h1>
+{% if orders %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Total</th>
+            <th>Created</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_number }}</td>
+            <td>${{ "%.2f"|format(order.total) }}</td>
+            <td>{{ order.created_at }}</td>
+            <td><a href="{{ url_for('pos.view_order', order_id=order.id) }}" class="btn btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No active orders.</p>
+{% endif %}
+{% endblock %}

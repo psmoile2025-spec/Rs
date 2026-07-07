@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Sales Report{% endblock %}
+{% block content %}
+<h1>Sales Report</h1>
+
+<form method="GET" class="inline-form">
+    <label>From: <input type="date" name="from" value="{{ from_date }}"></label>
+    <label>To: <input type="date" name="to" value="{{ to_date }}"></label>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{{ url_for('reports.export_sales', from=from_date, to=to_date) }}" class="btn">Export CSV</a>
+</form>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ summary.order_count }}</div>
+        <div class="stat-label">Paid Orders</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(summary.total_revenue) }}</div>
+        <div class="stat-label">Total Revenue</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(summary.total_subtotal) }}</div>
+        <div class="stat-label">Subtotal</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">${{ "%.2f"|format(summary.total_tax) }}</div>
+        <div class="stat-label">Tax</div>
+    </div>
+    <div class="stat-card {% if summary.total_profit is not none and summary.total_profit >= 0 %}stat-profit{% elif summary.total_profit is not none %}stat-loss{% endif %}">
+        <div class="stat-value">
+            {% if summary.total_profit is not none %}
+                ${{ "%.2f"|format(summary.total_profit) }}
+            {% else %}
+                ---
+            {% endif %}
+        </div>
+        <div class="stat-label">Profit / Loss</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">
+            {% if summary.total_cost is not none and summary.total_subtotal > 0 %}
+                ${{ "%.2f"|format(summary.total_cost) }}
+            {% else %}
+                ---
+            {% endif %}
+        </div>
+        <div class="stat-label">COGS</div>
+    </div>
+</div>
+
+{% if orders %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order #</th>
+            <th>Status</th>
+            <th>Items</th>
+            <th>Subtotal</th>
+            <th>Tax</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_number }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.items|length }}</td>
+            <td>${{ "%.2f"|format(order.subtotal) }}</td>
+            <td>${{ "%.2f"|format(order.tax) }}</td>
+            <td>${{ "%.2f"|format(order.total) }}</td>
+            <td>{{ order.payment_type or "-" }}</td>
+            <td>{{ order.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No orders in this date range.</p>
+{% endif %}
+{% endblock %}

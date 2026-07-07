@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant POS - {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-brand">Restaurant POS</div>
+        <nav class="navbar-nav">
+            <a href="{{ url_for('pos.pos_index') }}" class="nav-link">POS</a>
+            <a href="{{ url_for('menu.list_categories') }}" class="nav-link">Categories</a>
+            <a href="{{ url_for('menu.list_items') }}" class="nav-link">Menu Items</a>
+            <a href="{{ url_for('reports.dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('reports.sales') }}" class="nav-link">Sales</a>
+            {% if session.user_id %}
+                <a href="{{ url_for('auth.account') }}" class="nav-link">Account</a>
+                <span class="nav-user">{{ session.user_name }}</span>
+                <a href="{{ url_for('auth.logout') }}" class="nav-link">Logout</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/pos.js') }}"></script>
+</body>
+</html>
