@@ -26,12 +26,14 @@ def _init_repositories(app: Flask) -> None:
         SupabaseMenuItemRepository,
         SupabaseOrderRepository,
         SupabaseOrderItemRepository,
+        SupabaseSettingRepository,
     )
     app.user_repo = SupabaseUserRepository()
     app.category_repo = SupabaseCategoryRepository()
     app.menu_item_repo = SupabaseMenuItemRepository()
     app.order_repo = SupabaseOrderRepository()
     app.order_item_repo = SupabaseOrderItemRepository()
+    app.settings_repo = SupabaseSettingRepository()
 
 
 def _init_services(app: Flask) -> None:
@@ -42,7 +44,7 @@ def _init_services(app: Flask) -> None:
         order_item_repo=app.order_item_repo,
         menu_item_repo=app.menu_item_repo,
         category_repo=app.category_repo,
-        tax_rate=app.config["TAX_RATE"],
+        settings_repo=app.settings_repo,
     )
     app.menu_service = MenuService(
         category_repo=app.category_repo,
@@ -60,10 +62,12 @@ def _register_blueprints(app: Flask) -> None:
     from .routes.pos import pos_bp
     from .routes.menu import menu_bp
     from .routes.reports import reports_bp
+    from .routes.settings import settings_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(pos_bp)
     app.register_blueprint(menu_bp)
     app.register_blueprint(reports_bp)
+    app.register_blueprint(settings_bp)
 
 
 def _init_default_admin(app: Flask) -> None:

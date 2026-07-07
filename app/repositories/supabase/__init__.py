@@ -4,6 +4,7 @@ from .category_repo import SupabaseCategoryRepository
 from .menu_item_repo import SupabaseMenuItemRepository
 from .order_repo import SupabaseOrderRepository
 from .order_item_repo import SupabaseOrderItemRepository
+from .setting_repo import SupabaseSettingRepository
 
 __all__ = [
     "get_supabase_client",
@@ -14,4 +15,5 @@ __all__ = [
     "SupabaseMenuItemRepository",
     "SupabaseOrderRepository",
     "SupabaseOrderItemRepository",
+    "SupabaseSettingRepository",
 ]

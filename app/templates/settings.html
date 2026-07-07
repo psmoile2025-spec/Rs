@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Settings</h1>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Tax Rate</h2></div>
+  <form method="POST" class="form" style="max-width:360px;">
+    <div class="form-group">
+      <label for="tax_rate">Tax Rate (%)</label>
+      <input type="number" id="tax_rate" name="tax_rate" step="0.01" min="0" max="100" class="form-control" placeholder="e.g. 8" value="{{ current_tax_rate if current_tax_rate is not none else '' }}">
+      <p class="text-muted" style="margin-top:0.4rem;font-size:0.8rem;">
+        {% if current_tax_rate is not none and current_tax_rate != '' %}
+          Current: {{ current_tax_rate }}%
+        {% else %}
+          Default: 8% — set a value above to override
+        {% endif %}
+      </p>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <button type="submit" class="btn btn-primary">Save</button>
+      {% if current_tax_rate is not none and current_tax_rate != '' %}
+      <button type="submit" name="clear" value="1" class="btn btn-secondary" formaction="{{ url_for('settings.index') }}" onclick="document.getElementById('tax_rate').value=''">Reset to Default</button>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

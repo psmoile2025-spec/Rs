@@ -1,4 +1,4 @@
-from .repository import Repository, UserRepository, CategoryRepository, MenuItemRepository, OrderRepository, OrderItemRepository
+from .repository import Repository, UserRepository, CategoryRepository, MenuItemRepository, OrderRepository, OrderItemRepository, SettingRepository
 from .auth_service import AuthServiceInterface
 from .pos_service import POSServiceInterface
 from .menu_service import MenuServiceInterface
@@ -11,6 +11,7 @@ __all__ = [
     "MenuItemRepository",
     "OrderRepository",
     "OrderItemRepository",
+    "SettingRepository",
     "AuthServiceInterface",
     "POSServiceInterface",
     "MenuServiceInterface",

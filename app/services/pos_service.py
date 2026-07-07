@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 from decimal import Decimal, ROUND_HALF_UP
 
-from ..interfaces import POSServiceInterface, OrderRepository, OrderItemRepository, MenuItemRepository, CategoryRepository
+from ..interfaces import POSServiceInterface, OrderRepository, OrderItemRepository, MenuItemRepository, CategoryRepository, SettingRepository
 from ..models import Order, OrderItem, MenuItem, Category, OrderStatus
 
 
@@ -16,13 +16,22 @@ class POSService(POSServiceInterface):
         order_item_repo: OrderItemRepository,
         menu_item_repo: MenuItemRepository,
         category_repo: CategoryRepository,
-        tax_rate: float = 0.08,
+        settings_repo: SettingRepository,
     ):
         self._order_repo = order_repo
         self._order_item_repo = order_item_repo
         self._menu_item_repo = menu_item_repo
         self._category_repo = category_repo
-        self._tax_rate = Decimal(str(tax_rate))
+        self._settings_repo = settings_repo
+
+    def _get_tax_rate(self) -> Decimal:
+        try:
+            raw = self._settings_repo.get("tax_rate")
+            if raw is None:
+                return Decimal("0.08")
+            return Decimal(str(raw))
+        except Exception:
+            return Decimal("0.08")
 
     def get_menu_data(self) -> Tuple[List[Category], List[MenuItem]]:
         categories = self._category_repo.list()
@@ -93,7 +102,8 @@ class POSService(POSServiceInterface):
             raise OrderError(f"Cannot pay an order with status '{order.status}'")
 
         subtotal = self._calculate_subtotal(order_id)
-        tax = (subtotal * self._tax_rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        tax_rate = self._get_tax_rate()
+        tax = (subtotal * tax_rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         total = (subtotal + tax).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
         return self._order_repo.mark_paid(
@@ -132,7 +142,8 @@ class POSService(POSServiceInterface):
 
     def _recalculate_order(self, order_id: str) -> None:
         subtotal = self._calculate_subtotal(order_id)
-        tax = (subtotal * self._tax_rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        tax_rate = self._get_tax_rate()
+        tax = (subtotal * tax_rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         total = (subtotal + tax).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
         self._order_repo.update_totals(

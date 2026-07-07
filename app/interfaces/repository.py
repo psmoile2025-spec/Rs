@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, List, Any
 from datetime import datetime
 
-from ..models import User, Category, MenuItem, Order, OrderItem
+from ..models import User, Category, MenuItem, Order, OrderItem, Setting
 
 
 class Repository(ABC):
@@ -162,4 +162,18 @@ class OrderItemRepository(Repository, ABC):
 
     @abstractmethod
     def delete_by_order(self, order_id: str) -> bool:
+        ...
+
+
+class SettingRepository(ABC):
+    @abstractmethod
+    def get(self, key: str) -> Optional[str]:
+        ...
+
+    @abstractmethod
+    def set(self, key: str, value: str) -> None:
+        ...
+
+    @abstractmethod
+    def list(self, **filters) -> List[Setting]:
         ...
