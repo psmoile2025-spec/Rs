@@ -151,12 +151,13 @@ class ReportService(ReportServiceInterface):
     def _build_cost_map(self) -> Optional[Dict[str, Decimal]]:
         items = self._menu_item_repo.list()
         cost_map: Dict[str, Decimal] = {}
-        all_have_cost = True
+        any_have_cost = False
         for item in items:
             if item.cost is not None:
                 cost_map[item.id] = item.cost
+                any_have_cost = True
             else:
                 cost_map[item.id] = Decimal("0")
-        if not all_have_cost and not any(item.cost is not None for item in items):
+        if not any_have_cost:
             return None
         return cost_map

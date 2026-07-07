@@ -25,10 +25,6 @@ class AuthService(AuthServiceInterface):
         return generate_password_hash(password)
 
     @staticmethod
-    def hash_password(password: str) -> str:
-        return generate_password_hash(password)
-
-    @staticmethod
     def create_default_admin(user_repo: UserRepository, email: str, password: str, display_name: str = "Admin") -> User:
         hashed = generate_password_hash(password)
         existing = user_repo.get_by_email(email)
