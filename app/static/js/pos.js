@@ -1,3 +1,8 @@
+function formatKyat(value) {
+  if (value == null) return "---";
+  return "Ks " + Math.round(Number(value)).toLocaleString("en-US");
+}
+
 var currentOrderId = null;
 var currentOrderStatus = null;
 
@@ -164,7 +169,7 @@ function refreshActiveOrders() {
         .map(function (o) {
           return '<li class="active-order-item">' +
             '<a href="#" class="order-link" data-order-id="' + o.id + '">' +
-            o.order_number + " - $" + o.total.toFixed(2) + "</a>" +
+            o.order_number + " - " + formatKyat(o.total) + "</a>" +
             '<button class="cancel-order-btn btn btn-sm btn-danger" data-order-id="' + o.id + '" title="Cancel order">&times;</button>' +
             "</li>";
         })
@@ -212,7 +217,7 @@ function updateCartToggleInfo(order) {
     countEl.textContent = "0 items";
     return;
   }
-  infoEl.textContent = "$" + order.total.toFixed(2);
+  infoEl.textContent = formatKyat(order.total);
   var n = order.items.length;
   countEl.textContent = n + " item" + (n !== 1 ? "s" : "");
 }
@@ -230,9 +235,9 @@ function renderOrder(order) {
   if (order.status !== "open") {
     cartItems.innerHTML = "<p style='color:#64748b;text-align:center;padding:1rem;'>This order is <strong>" + order.status + "</strong>. No further changes allowed.</p>";
     cartTotals.innerHTML =
-      "<p><span>Subtotal</span><span>$" + order.subtotal.toFixed(2) + "</span></p>" +
-      "<p><span>Tax</span><span>$" + order.tax.toFixed(2) + "</span></p>" +
-      '<p class="total"><span>Total</span><span>$' + order.total.toFixed(2) + "</span></p>";
+      "<p><span>Subtotal</span><span>" + formatKyat(order.subtotal) + "</span></p>" +
+      "<p><span>Tax</span><span>" + formatKyat(order.tax) + "</span></p>" +
+      '<p class="total"><span>Total</span><span>' + formatKyat(order.total) + "</span></p>";
     updateCartToggleInfo(order);
     return;
   }
@@ -242,16 +247,16 @@ function renderOrder(order) {
       return '<div class="cart-item">' +
         '<span class="cart-item-name">' + item.name + "</span>" +
         '<span class="cart-item-qty">' + item.quantity + "</span>" +
-        '<span class="cart-item-price">$' + item.line_total.toFixed(2) + "</span>" +
+        '<span class="cart-item-price">' + formatKyat(item.line_total) + "</span>" +
         '<button class="cart-item-remove" data-item-id="' + item.id + '">&times;</button>' +
         "</div>";
     })
     .join("");
 
   cartTotals.innerHTML =
-    "<p><span>Subtotal</span><span>$" + order.subtotal.toFixed(2) + "</span></p>" +
-    "<p><span>Tax</span><span>$" + order.tax.toFixed(2) + "</span></p>" +
-    '<p class="total"><span>Total</span><span>$' + order.total.toFixed(2) + "</span></p>";
+    "<p><span>Subtotal</span><span>" + formatKyat(order.subtotal) + "</span></p>" +
+    "<p><span>Tax</span><span>" + formatKyat(order.tax) + "</span></p>" +
+    '<p class="total"><span>Total</span><span>' + formatKyat(order.total) + "</span></p>";
 
   updateCartToggleInfo(order);
 }

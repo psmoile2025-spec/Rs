@@ -28,21 +28,21 @@
         <div class="stat-label">Paid Orders</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">${{ "%.2f"|format(summary.total_revenue) }}</div>
+        <div class="stat-value">{{ summary.total_revenue | kyat }}</div>
         <div class="stat-label">Total Revenue</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">${{ "%.2f"|format(summary.total_subtotal) }}</div>
+        <div class="stat-value">{{ summary.total_subtotal | kyat }}</div>
         <div class="stat-label">Subtotal</div>
     </div>
     <div class="stat-card">
-        <div class="stat-value">${{ "%.2f"|format(summary.total_tax) }}</div>
+        <div class="stat-value">{{ summary.total_tax | kyat }}</div>
         <div class="stat-label">Tax</div>
     </div>
     <div class="stat-card {% if summary.total_profit is not none and summary.total_profit >= 0 %}stat-profit{% elif summary.total_profit is not none %}stat-loss{% endif %}">
         <div class="stat-value">
             {% if summary.total_profit is not none %}
-                ${{ "%.2f"|format(summary.total_profit) }}
+                {{ summary.total_profit | kyat }}
             {% else %}
                 ---
             {% endif %}
@@ -52,7 +52,7 @@
     <div class="stat-card">
         <div class="stat-value">
             {% if summary.total_cost is not none and summary.total_subtotal > 0 %}
-                ${{ "%.2f"|format(summary.total_cost) }}
+                {{ summary.total_cost | kyat }}
             {% else %}
                 ---
             {% endif %}
@@ -82,9 +82,9 @@
             <td>{{ order.order_number }}</td>
             <td>{{ order.status }}</td>
             <td>{{ order.items|length }}</td>
-            <td>${{ "%.2f"|format(order.subtotal) }}</td>
-            <td>${{ "%.2f"|format(order.tax) }}</td>
-            <td>${{ "%.2f"|format(order.total) }}</td>
+            <td>{{ order.subtotal | kyat }}</td>
+            <td>{{ order.tax | kyat }}</td>
+            <td>{{ order.total | kyat }}</td>
             <td>{{ order.payment_type or "-" }}</td>
             <td>{{ order.created_at }}</td>
         </tr>

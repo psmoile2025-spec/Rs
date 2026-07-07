@@ -14,6 +14,7 @@ def create_app(config_class=Config) -> Flask:
     _register_blueprints(app)
     _init_default_admin(app)
     _register_error_handlers(app)
+    _register_template_filters(app)
 
     return app
 
@@ -82,6 +83,18 @@ def _init_default_admin(app: Flask) -> None:
     except Exception as e:
         import logging
         logging.warning("Could not initialize admin user: %s", e)
+
+
+def _register_template_filters(app: Flask) -> None:
+    @app.template_filter("kyat")
+    def kyat_filter(value):
+        if value is None:
+            return "---"
+        try:
+            num = int(round(float(value)))
+            return "Ks " + "{:,}".format(num)
+        except (ValueError, TypeError):
+            return "---"
 
 
 def _register_error_handlers(app: Flask) -> None:

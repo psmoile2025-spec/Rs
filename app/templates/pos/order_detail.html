@@ -18,17 +18,17 @@
         <tr>
             <td>{{ item.item_name or item.menu_item_id }}</td>
             <td>{{ item.quantity }}</td>
-            <td>${{ "%.2f"|format(item.unit_price) }}</td>
-            <td>${{ "%.2f"|format(item.line_total) }}</td>
+            <td>{{ item.unit_price | kyat }}</td>
+            <td>{{ item.line_total | kyat }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
 <div class="totals">
-    <p>Subtotal: ${{ "%.2f"|format(order.subtotal) }}</p>
-    <p>Tax: ${{ "%.2f"|format(order.tax) }}</p>
-    <p><strong>Total: ${{ "%.2f"|format(order.total) }}</strong></p>
+    <p>Subtotal: {{ order.subtotal | kyat }}</p>
+    <p>Tax: {{ order.tax | kyat }}</p>
+    <p><strong>Total: {{ order.total | kyat }}</strong></p>
     {% if order.payment_type %}
     <p>Payment: {{ order.payment_type }}</p>
     {% endif %}

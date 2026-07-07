@@ -16,7 +16,7 @@
         {% for order in orders %}
         <tr>
             <td>{{ order.order_number }}</td>
-            <td>${{ "%.2f"|format(order.total) }}</td>
+            <td>{{ order.total | kyat }}</td>
             <td>{{ order.created_at }}</td>
             <td><a href="{{ url_for('pos.view_order', order_id=order.id) }}" class="btn btn-sm">View</a></td>
         </tr>

@@ -13,7 +13,7 @@
             {% for item in items %}
             <button class="item-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-category="{{ item.category_id }}">
                 <span class="item-name">{{ item.name }}</span>
-                <span class="item-price">${{ "%.2f"|format(item.price) }}</span>
+                <span class="item-price">{{ item.price | kyat }}</span>
             </button>
             {% endfor %}
         </div>
@@ -29,7 +29,7 @@
                 {% for order in active_orders %}
                 <li class="active-order-item">
                     <a href="#" class="order-link" data-order-id="{{ order.id }}">
-                        {{ order.order_number }} - ${{ "%.2f"|format(order.total) }}
+                        {{ order.order_number }} - {{ order.total | kyat }}
                     </a>
                     <button class="cancel-order-btn btn btn-sm btn-danger" data-order-id="{{ order.id }}" title="Cancel order">&times;</button>
                 </li>
@@ -57,7 +57,7 @@
     <div class="modal-content">
         <h2>Payment</h2>
         <p>Order: <span id="pay-order-number"></span></p>
-        <p>Total: $<span id="pay-total"></span></p>
+        <p>Total: <span id="pay-total"></span></p>
         <form id="pay-form">
             <input type="hidden" id="pay-order-id">
             <div class="form-group">

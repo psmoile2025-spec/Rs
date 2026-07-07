@@ -439,6 +439,18 @@ input[type="number"], input[type="date"], select, textarea {
   border-top: 1px solid var(--slate-200);
 }
 
+/* ===== Badges ===== */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-danger { background: #fef2f2; color: #991b1b; }
+
 /* ===== Login ===== */
 .login-body {
   display: flex;
