@@ -36,6 +36,10 @@ class UserRepository(Repository, ABC):
     def update(self, id: str, **kwargs) -> Optional[User]:
         ...
 
+    @abstractmethod
+    def delete(self, id: str) -> bool:
+        ...
+
 
 class CategoryRepository(Repository, ABC):
     @abstractmethod

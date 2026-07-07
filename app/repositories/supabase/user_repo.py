@@ -47,3 +47,8 @@ class SupabaseUserRepository(UserRepository):
         if not result.data:
             return None
         return User.from_dict(result.data[0])
+
+    def delete(self, id: str) -> bool:
+        client = get_supabase_client()
+        result = client.table("users").delete().eq("id", id).execute()
+        return len(result.data) > 0

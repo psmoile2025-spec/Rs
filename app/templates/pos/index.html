@@ -18,7 +18,7 @@
             {% endfor %}
         </div>
     </div>
-    <div class="pos-cart">
+    <div class="pos-cart" id="posCart">
         <h2>Current Order</h2>
         <div id="order-info">
             <p>No active order selected.</p>
@@ -43,6 +43,14 @@
             <button id="pay-btn" class="btn btn-success" disabled>Pay</button>
         </div>
     </div>
+    <div class="pos-cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="pos-cart-toggle" id="cartToggle">
+        <div class="cart-summary">
+            <strong id="cartToggleInfo">No active order</strong>
+            <span id="cartToggleCount">0 items</span>
+        </div>
+        <button class="btn btn-primary" onclick="toggleCart()">Open Cart &uarr;</button>
+    </div>
 </div>
 
 <div id="pay-modal" class="modal" style="display:none;">
@@ -64,4 +72,15 @@
         </form>
     </div>
 </div>
+
+<script>
+function toggleCart() {
+  var cart = document.getElementById("posCart");
+  var overlay = document.getElementById("cartOverlay");
+  var isOpen = cart.classList.toggle("open");
+  overlay.classList.toggle("open", isOpen);
+  var btn = document.querySelector("#cartToggle .btn");
+  btn.innerHTML = isOpen ? "Hide Cart &darr;" : "Open Cart &uarr;";
+}
+</script>
 {% endblock %}

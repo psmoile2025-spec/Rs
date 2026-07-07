@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..interfaces import AuthServiceInterface, UserRepository
@@ -20,14 +20,22 @@ class AuthService(AuthServiceInterface):
     def get_current_user(self, user_id: str) -> Optional[User]:
         return self._user_repo.get_by_id(user_id)
 
+    def list_users(self) -> List[User]:
+        return self._user_repo.list()
+
+    def create_user(self, email: str, password: str, display_name: str) -> User:
+        existing = self._user_repo.get_by_email(email)
+        if existing:
+            raise ValueError(f"User with email '{email}' already exists")
+        hashed = generate_password_hash(password)
+        return self._user_repo.create(email, hashed, display_name)
+
+    def update_user(self, user_id: str, email: str, display_name: str) -> Optional[User]:
+        return self._user_repo.update(user_id, email=email, display_name=display_name)
+
+    def delete_user(self, user_id: str) -> bool:
+        return self._user_repo.delete(user_id)
+
     @staticmethod
     def hash_password(password: str) -> str:
         return generate_password_hash(password)
-
-    @staticmethod
-    def create_default_admin(user_repo: UserRepository, email: str, password: str, display_name: str = "Admin") -> User:
-        hashed = generate_password_hash(password)
-        existing = user_repo.get_by_email(email)
-        if existing:
-            return existing
-        return user_repo.create(email, hashed, display_name)

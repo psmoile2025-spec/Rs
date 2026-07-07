@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Categories{% endblock %}
 {% block content %}
-<h1>Categories</h1>
+<div class="page-header">
+  <h1>Categories</h1>
+</div>
 
-<form method="POST" action="{{ url_for('menu.create_category') }}" class="inline-form">
+<div class="card" style="margin-bottom:1.25rem;">
+  <div class="card-header"><h2>Add Category</h2></div>
+  <form method="POST" action="{{ url_for('menu.create_category') }}" class="inline-form" style="margin:0;">
     <input type="text" name="name" placeholder="Category name" required>
     <input type="number" name="sort_order" placeholder="Sort order" value="0" min="0">
     <button type="submit" class="btn btn-primary">Add</button>
-</form>
+  </form>
+</div>
 
+<div class="table-responsive">
 <table class="table">
     <thead>
         <tr>
@@ -37,4 +43,5 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock %}

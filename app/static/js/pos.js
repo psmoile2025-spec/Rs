@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
         payBtn.disabled = false;
         cartItems.innerHTML = "";
         cartTotals.innerHTML = "";
+        updateCartToggleInfo(null);
         refreshActiveOrders();
       });
   });
@@ -202,6 +203,20 @@ function loadOrder(orderId) {
     });
 }
 
+function updateCartToggleInfo(order) {
+  var infoEl = document.getElementById("cartToggleInfo");
+  var countEl = document.getElementById("cartToggleCount");
+  if (!infoEl || !countEl) return;
+  if (!order || !order.items || order.items.length === 0) {
+    infoEl.textContent = "No active order";
+    countEl.textContent = "0 items";
+    return;
+  }
+  infoEl.textContent = "$" + order.total.toFixed(2);
+  var n = order.items.length;
+  countEl.textContent = n + " item" + (n !== 1 ? "s" : "");
+}
+
 function renderOrder(order) {
   var cartItems = document.getElementById("cart-items");
   var cartTotals = document.getElementById("cart-totals");
@@ -218,6 +233,7 @@ function renderOrder(order) {
       "<p><span>Subtotal</span><span>$" + order.subtotal.toFixed(2) + "</span></p>" +
       "<p><span>Tax</span><span>$" + order.tax.toFixed(2) + "</span></p>" +
       '<p class="total"><span>Total</span><span>$' + order.total.toFixed(2) + "</span></p>";
+    updateCartToggleInfo(order);
     return;
   }
 
@@ -236,6 +252,8 @@ function renderOrder(order) {
     "<p><span>Subtotal</span><span>$" + order.subtotal.toFixed(2) + "</span></p>" +
     "<p><span>Tax</span><span>$" + order.tax.toFixed(2) + "</span></p>" +
     '<p class="total"><span>Total</span><span>$' + order.total.toFixed(2) + "</span></p>";
+
+  updateCartToggleInfo(order);
 }
 
 function resetCart() {
@@ -245,6 +263,7 @@ function resetCart() {
   document.getElementById("cart-items").innerHTML = "";
   document.getElementById("cart-totals").innerHTML = "";
   document.getElementById("pay-btn").disabled = true;
+  updateCartToggleInfo(null);
 }
 
 function closePayModal() {
