@@ -1,5 +1,7 @@
-flask>=3.0
-python-dotenv>=1.0
-supabase>=2.0
-werkzeug>=3.0
+flask
+Flask-SQLAlchemy
+flask_migrate
+python-dotenv
+supabase
+werkzeug
 gunicorn
